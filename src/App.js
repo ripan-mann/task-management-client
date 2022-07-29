@@ -1,25 +1,61 @@
-import logo from './logo.svg';
+import React, { useState, useEffect } from "react";
+import TodoForm from "./todo-form";
+import TodoList from "./todo-list";
+import Axios from "axios";
 import './App.css';
+import SearchForm from "./search-form";
+
 
 function App() {
+  const [todoList_, setTodoList] = useState([]);
+
+  useEffect(() => {
+    Axios.get('https://task-management-busy-qa.herokuapp.com/getAllTasks').then((response) => {
+      setTodoList(response.data);
+    });
+  }, []);
+
+
+  const handleToggle_ = (id) => {
+    var mappedList = todoList_.map((task) => {
+      // if (Number(id) === task.id) { alert(task.complete); }
+      Axios.put('https://task-management-busy-qa.herokuapp.com/updateCompleteTask', { id: Number(id), complete: !task.complete }).then(() => {
+        console.log('Completed Task updated successfuly');
+        // props.addTask(userInput);
+        // window.location.reload(false);
+      });
+      return task.id === Number(id) ? { ...task, complete: !task.complete } : { ...task }
+    });
+    setTodoList(mappedList);
+  }
+  const clearCompleted_ = () => {
+    // var notCompletedTaskList = 
+    todoList_.filter(task => {
+      Axios.delete('https://task-management-busy-qa.herokuapp.com/deleteCompletedTask').then(() => {
+        console.log('Completed Tasks deleted successfuly');
+        // props.addTask(userInput);
+        window.location.reload(false);
+      });
+    })
+    // setTodoList(notCompletedTaskList);
+  }
+  // const addTask_ = (userInput) => {
+  //   var copy = [...todoList_];
+  //   // copy = [...copy, { id: todoList_.length + 1, task: userInput, complete: false }]
+  //   setTodoList(copy);
+  // }
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <TodoList todoList={todoList_} handleToggle={handleToggle_} clearCompletedTask={clearCompleted_} />
+      <TodoForm />
+      <SearchForm todoList={todoList_} />
+
     </div>
   );
 }
 
 export default App;
+
+
+//mysql
+//mysql workbench
