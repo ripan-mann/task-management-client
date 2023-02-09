@@ -9,18 +9,23 @@ function App() {
   const [todoList_, setTodoList] = useState([]);
 
   useEffect(() => {
-    Axios.get("http://localhost:3001/getAllTasks").then((response) => {
-      setTodoList(response.data);
-    });
+    Axios.get("https://task-management-busy-qa.herokuapp.com/getAllTasks").then(
+      (response) => {
+        setTodoList(response.data);
+      }
+    );
   }, []);
 
   const handleToggle_ = (id) => {
     var mappedList = todoList_.map((task) => {
       // if (Number(id) === task.id) { alert(task.complete); }
-      Axios.put("http://localhost:3001/updateCompleteTask", {
-        id: Number(id),
-        complete: !task.complete,
-      }).then(() => {
+      Axios.put(
+        "https://task-management-busy-qa.herokuapp.com/updateCompleteTask",
+        {
+          id: Number(id),
+          complete: !task.complete,
+        }
+      ).then(() => {
         console.log("Completed Task updated successfuly");
         // props.addTask(userInput);
         // window.location.reload(false);
@@ -34,7 +39,9 @@ function App() {
   const clearCompleted_ = () => {
     // var notCompletedTaskList =
     todoList_.filter((task) => {
-      Axios.delete("http://localhost:3001/deleteCompletedTask").then(() => {
+      Axios.delete(
+        "https://task-management-busy-qa.herokuapp.com/deleteCompletedTask"
+      ).then(() => {
         console.log("Completed Tasks deleted successfuly");
         // props.addTask(userInput);
         window.location.reload(false);
